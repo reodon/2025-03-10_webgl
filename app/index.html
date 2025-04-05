@@ -2,7 +2,8 @@
 <html lang="ja">
   <head>
     <meta charset="utf-8" />
-    <title>WebGL デモ</title>
+    <title>Cube App | Lit🔥</title>
+
     <script type="module" src="/src/components/cube-controler.ts"></script>
     <script type="module" src="/src/components/camera-reset-button.ts"></script>
     <script type="module" src="/src/components/greek-id-button.ts"></script>
@@ -10,6 +11,7 @@
     <script type="module" src="/src/components/cube-menu.ts"></script>
 
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+
     <script>
       document.addEventListener("DOMContentLoaded", (e) => {
         const s = document.querySelector('a-cylinder#sigma');
@@ -75,31 +77,19 @@
             // {x: 1.1, y: 1.1, z: 1.1}
           );
           document.querySelector('a-entity#cube').object3D.add(sprite);
-        }
+        };
 
-        addNum({
-          num: 1, position: {x: -1.1, y: 1.1, z: -1.1}
-        });
-        addNum({
-          num: 1, position: {x: 1.1, y: -1.1, z: 1.1}
-        });
-        addNum({
-          num: 2, position: {x: -1.1, y: 1.1, z: 1.1}
-        });
-        addNum({
-          num: 2, position: {x: 1.1, y: -1.1, z: -1.1}
-        });
-        addNum({
-          num: 3, position: {x: 1.1, y: 1.1, z: 1.1}
-        });
-        addNum({
-          num: 3, position: {x: -1.1, y: -1.1, z: -1.1}
-        });
-        addNum({
-          num: 4, position: {x: 1.1, y: 1.1, z: -1.1}
-        });
-        addNum({
-          num: 4, position: {x: -1.1, y: -1.1, z: 1.1}
+        [
+          {num: 1, position: {x: -1.1, y: 1.1, z: -1.1}},
+          {num: 2, position: {x: -1.1, y: 1.1, z: 1.1}},
+          {num: 3, position: {x: 1.1, y: 1.1, z: 1.1}},
+          {num: 4, position: {x: 1.1, y: 1.1, z: -1.1}},
+        ].forEach(({num, position}) => {
+          const diagonalPos = Object.fromEntries(
+            Object.entries(position).map(([axis, value]) => ([axis, -value]))
+          );
+          addNum({num, position});
+          addNum({num, position: diagonalPos});
         });
       });
     </script>

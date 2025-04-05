@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>WebGL デモ</title>
+    <script type="module" src="/src/components/cube-controler.ts"></script>
+    <script type="module" src="/src/components/camera-reset-button.ts"></script>
+    <script type="module" src="/src/components/greek-id-button.ts"></script>
+    <script type="module" src="/src/components/greek-button.ts"></script>
+    <script type="module" src="/src/components/cube-menu.ts"></script>
+
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", (e) => {
+        const s = document.querySelector('a-cylinder#sigma');
+        console.log(s);
+        const q = s.object3D.quaternion;
+        const target = new THREE.Quaternion();
+        const axis = new THREE.Vector3(-1, 0, 1).normalize();
+        target.setFromAxisAngle(axis, Math.atan(Math.sqrt(2)));
+        q.multiply(target);
+
+        const createSprite = (texture, scale, position) => {
+          const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+          // spriteMaterial.transparent = true;
+          // spriteMaterial.depthTest = false;
+          spriteMaterial.depthWrite = false;
+          const sprite = new THREE.Sprite(spriteMaterial);
+          sprite.scale.set(scale.x, scale.y, scale.z);
+          sprite.position.set(position.x, position.y, position.z);
+          sprite.renderOrder = 100;
+          // sprite.transparent = true;
+          // sprite.depthTest = false;
+          return sprite;
+        };
+
+        const createCanvasForTexture = (canvasWidth, canvasHeight, text, fontSize) => {
+          // 貼り付けるcanvasを作成。
+          const canvasForText = document.createElement('canvas');
+          const ctx = canvasForText.getContext('2d');
+          ctx.canvas.width = canvasWidth; // 小さいと文字がぼやける
+          ctx.canvas.height = canvasHeight; // 小さいと文字がぼやける
+          // ctx.fillStyle = 'rgba(0, 0, 255, 0.5)';
+          // ctx.fillStyle = 'transparent';
+          // ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+          ctx.fillStyle = 'black';
+          ctx.font = `${fontSize}px sun-serif`;
+          ctx.fillText(
+            text,
+            // x方向の余白/2をx方向開始時の始点とすることで、横方向の中央揃えをしている。
+            (canvasWidth - ctx.measureText(text).width) / 2,
+            // y方向のcanvasの中央に文字の高さの半分を加えることで、縦方向の中央揃えをしている。
+            canvasHeight / 2 + ctx.measureText(text).actualBoundingBoxAscent / 2
+          );
+          return canvasForText;
+        };
+
+        const addNum = ({
+          num,
+          position,
+        }) => {
+          const canvasTexture = new THREE.CanvasTexture(
+            createCanvasForTexture(100, 100, String(num), 50)
+          );
+          // const scaleMaster = 70;
+          const scaleMaster = 1;
+          const sprite = createSprite(
+            canvasTexture,
+            {
+              x: scaleMaster,
+              y: scaleMaster,
+              z: scaleMaster,
+            },
+            position,
+            // {x: 1.1, y: 1.1, z: 1.1}
+          );
+          document.querySelector('a-entity#cube').object3D.add(sprite);
+        }
+
+        addNum({
+          num: 1, position: {x: -1.1, y: 1.1, z: -1.1}
+        });
+        addNum({
+          num: 1, position: {x: 1.1, y: -1.1, z: 1.1}
+        });
+        addNum({
+          num: 2, position: {x: -1.1, y: 1.1, z: 1.1}
+        });
+        addNum({
+          num: 2, position: {x: 1.1, y: -1.1, z: -1.1}
+        });
+        addNum({
+          num: 3, position: {x: 1.1, y: 1.1, z: 1.1}
+        });
+        addNum({
+          num: 3, position: {x: -1.1, y: -1.1, z: -1.1}
+        });
+        addNum({
+          num: 4, position: {x: 1.1, y: 1.1, z: -1.1}
+        });
+        addNum({
+          num: 4, position: {x: -1.1, y: -1.1, z: 1.1}
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <a-scene visible="true">
+      <a-sky color="gray"></a-sky>
+
+      <a-entity
+        id="cube"
+      >
+        <a-entity
+          id="planes"
+          position="0 0 0"
+        >
+          <a-entity id="front">
+            <a-plane
+              position="0 0 1"
+              rotation="0 0 0"
+              width="2" height="2"
+              color="#ff00ff"
+              opacity="0.5"
+              side="double"
+            ></a-plane>
+          </a-entity>
+          <a-entity id="back">
+            <a-plane
+              position="0 0 -1"
+              rotation="0 0 0"
+              width="2" height="2"
+              color="#00ff00"
+              opacity="0.5"
+              side="double"
+            ></a-plane>
+          </a-entity>
+          <a-entity id="right">
+            <a-plane
+              position="1 0 0"
+              rotation="0 90 0"
+              width="2" height="2"
+              color="#ff0000"
+              opacity="0.5"
+              side="double"
+            ></a-plane>
+          </a-entity>
+          <a-entity id="left">
+            <a-plane
+              position="-1 0 0"
+              rotation="0 90 0"
+              width="2" height="2"
+              color="#0000ff"
+              opacity="0.5"
+              side="double"
+            ></a-plane>
+          </a-entity>
+          <a-entity id="top">
+            <a-plane
+              position="0 1 0"
+              rotation="-90 0 0"
+              width="2" height="2"
+              color="#00ffff"
+              opacity="0.5"
+              side="double"
+            ></a-plane>
+          </a-entity>
+          <a-entity id="bottom">
+            <a-plane
+              position="0 -1 0"
+              rotation="-90 0 0"
+              width="2" height="2"
+              color="#ffff00"
+              opacity="0.5"
+              side="double"
+            ></a-plane>
+          </a-entity>
+
+          <a-entity id="arrow">
+            <a-cylinder
+              color="red"
+              radius="0.05"
+              height="3"
+              rotation="0 0 -90"
+              position="1.5 0 0"
+            ></a-cylinder>
+            <a-cone
+              color="red"
+              radius-bottom="0.15"
+              height="0.4"
+              rotation="0 0 -90"
+              position="3 0 0"
+            ></a-cone>
+            <a-cylinder
+              color="green"
+              height="3"
+              radius="0.05"
+              rotation="0 0 0"
+              position="0 1.5 0"
+            ></a-cylinder>
+            <a-cone
+              color="green"
+              radius-bottom="0.15"
+              height="0.4"
+              rotation="0 0 0"
+              position="0 3 0"
+            ></a-cone>
+            <a-cylinder
+              color="blue"
+              height="3"
+              radius="0.05"
+              rotation="90 0 0"
+              position="0 0 1.5"
+            ></a-cylinder>
+            <a-cone
+              color="blue"
+              radius-bottom="0.15"
+              height="0.4"
+              rotation="90 0 0"
+              position="0 0 3"
+            ></a-cone>
+          </a-entity>
+        </a-entity>
+
+        <!-- <a-entity id="text">
+          <a-text
+            value="1"
+            color="black"
+            height="10"
+            width="10"
+            position="-1.1 1.1 -1.1"
+            side="double"
+          ></a-text>
+          <a-text
+            value="1"
+            color="black"
+            height="10"
+            width="10"
+            position="1.1 -1.1 1.1"
+            side="double"
+          ></a-text>
+          <a-text
+            value="2"
+            color="black"
+            height="10"
+            width="10"
+            position="-1.1 1.1 1.1"
+            side="double"
+          ></a-text>
+          <a-text
+            value="2"
+            color="black"
+            height="10"
+            width="10"
+            position="1.1 -1.1 -1.1"
+            side="double"
+          ></a-text>
+          <a-text
+            value="3"
+            color="black"
+            height="10"
+            width="10"
+            position="1.1 1.1 1.1"
+            side="double"
+          ></a-text>
+          <a-text
+            value="3"
+            color="black"
+            height="10"
+            width="10"
+            position="-1.1 -1.1 -1.1"
+            side="double"
+          ></a-text>
+          <a-text
+            value="4"
+            color="black"
+            height="10"
+            width="10"
+            position="1.1 1.1 -1.1"
+            side="double"
+          ></a-text>
+          <a-text
+            value="4"
+            color="black"
+            height="10"
+            width="10"
+            position="-1.1 -1.1 1.1"
+            side="double"
+          ></a-text>
+        </a-entity> -->
+      </a-entity>
+
+      <a-entity id="axes">
+        <a-cylinder
+          color="red"
+          opacity="0.5"
+          depth-test="false"
+          height="999"
+          radius="0.05"
+          rotation="0 0 90"
+        ></a-cylinder>
+        <a-cylinder
+          color="green"
+          opacity="0.5"
+          depth-test="false"
+          height="999"
+          radius="0.05"
+          rotation="0 0 0"
+        ></a-cylinder>
+        <a-cylinder
+          color="blue"
+          opacity="0.5"
+          depth-test="false"
+          height="999"
+          radius="0.05"
+          rotation="90 0 0"
+        ></a-cylinder>
+        <!-- <a-entity
+          line__a1="start: 0 0 999; end 0 0 0; color: blue;"
+          line__a2="start: 0 0 -999; end 0 0 0; color: blue;"
+          line__b1="start: 0 999 0; end 0 0 0; color: green;"
+          line__b2="start: 0 -999 0; end 0 0 0; color: green;"
+          line__g1="start: 999 0 0; end 0 0 0; color: red;"
+          line__g2="start: -999 0 0; end 0 0 0; color: red;"
+        ></a-entity> -->
+
+        <a-cylinder
+          id="sigma"
+          color="black"
+          opacity="0.5"
+          depth-test="false"
+          height="999"
+          radius="0.05"
+          position="0 0 0"
+        ></a-cylinder>
+        <a-cylinder
+          color="white"
+          opacity="0.5"
+          depth-test="false"
+          height="999"
+          radius="0.05"
+          rotation="0 0 -45"
+        ></a-cylinder>
+        <!-- <a-entity
+          line__s1="start: -999 999 -999; end 0 0 0; color: black;"
+          line__s2="start: 999 -999 999; end 0 0 0; color: black;"
+          line__t1="start: 999 999 0; end 0 0 0; color: white;"
+          line__t2="start: -999 -999 0; end 0 0 0; color: white;"
+        ></a-entity> -->
+      </a-entity>
+
+      <a-entity
+        id="camera-box"
+        rotation="-30 20 0"
+        position="2 3 6"
+      >
+        <a-camera position="0 0 0">
+          <a-cursor visible="false"></a-cursor>
+        </a-camera>
+      </a-entity>
+    </a-scene>
+
+    <cube-controler
+      duration="1000"
+      axis-color="true"
+    ></cube-controler>
+  </body>
+</html>

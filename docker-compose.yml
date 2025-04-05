@@ -1,7 +1,9 @@
 services:
-  web:
-    image: nginx:latest
+  node:
+    image: node:22-slim
     ports:
-      - 8080:80
+      - 3000:5173
     volumes:
-      - ./src:/usr/share/nginx/html
+      - ./src:/srv/src
+    tty: true
+    entrypoint: /bin/sh

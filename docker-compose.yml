@@ -4,6 +4,6 @@ services:
     ports:
       - 3000:5173
     volumes:
-      - ./src:/srv/src
+      - ./app:/srv/app
     tty: true
     entrypoint: /bin/sh

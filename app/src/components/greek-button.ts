@@ -1,6 +1,6 @@
 import { LitElement, css, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { ff } from '../funcs'
+import { ff } from '../lib/funcs'
 // import type {ComplexAttributeConverter} from 'lit';
 
 // type Axis = [number, number, number];

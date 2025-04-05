@@ -1,6 +1,6 @@
 import { LitElement, css, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { busy, set_ax } from '../funcs'
+import { busy, set_ax } from '../lib/funcs'
 
 @customElement('greek-id-button')
 export class GreekIdButton extends LitElement {

@@ -7,8 +7,6 @@ var _ax: {
   x: 1, y: 2, z: 3,
 };
 
-const _duration = 1000;
-
 export function set_ax(ax: {x: number; y: number; z: number;}) {
   _ax = ax;
 }
@@ -34,7 +32,7 @@ function setAxis(ax: {x: string; y: string; z: string;}) {
     const cans = Math.sign(paxe[i][1]);
     _ax[ca] = sign * cans * (nan ?? -1);
   });
-  console.log(_ax)
+  // console.log(_ax)
 }
 
 function f({
@@ -82,7 +80,7 @@ export function busy(flag: boolean, axisColor?: string) {
     document.body.style.cursor = 'wait';
     const cubeControler = document.querySelector<HTMLElement>('cube-controler')?.shadowRoot!;
     cubeControler.querySelector<HTMLElement>('.buttons-loading')!.style.display = 'block';
-      console.log('axisColor')
+
     if (axisColor) {
       const axis = document.querySelector(`a-entity#axes a-cylinder[color='${axisColor}']`)!;
       axis.setAttribute('depth-test', true as any);
@@ -93,7 +91,7 @@ export function busy(flag: boolean, axisColor?: string) {
     document.body.style.cursor = 'auto';
     const cubeControler = document.querySelector<HTMLElement>('cube-controler')?.shadowRoot!;
     cubeControler.querySelector<HTMLElement>('.buttons-loading')!.style.display = 'none';
-    // document.querySelector<HTMLElement>('.buttons-loading')!.style.display = 'none';
+
     if (axisColor) {
       const axis = document.querySelector(`a-entity#axes a-cylinder[color='${axisColor}']`)!;
       axis.setAttribute('depth-test', false as any);
@@ -109,7 +107,7 @@ export function ff({
   elm,
   selector = 'a-entity#cube',
   from = 0,
-  duration = undefined,
+  duration = 1000,
   axisColor = undefined,
 }: {
   axis: [number, number, number];
@@ -128,7 +126,8 @@ export function ff({
     const out = cubeControler.querySelector<HTMLTextAreaElement>('textarea#out');
     if (!out) return;
     const values = [...out.value];
-    console.log(values);
+    // console.log(values);
+
     if (elm === values[0]) {
       if (values.length === 1) {
         out.value = elm + (2);
@@ -156,7 +155,7 @@ export function ff({
     axis,
     to,
     from,
-    duration: duration ?? _duration,
+    duration,
   });
 
   setTimeout(() => {
@@ -177,5 +176,5 @@ export function ff({
     //   setAxis(ax);
     //   document.body.style.pointerEvents = 'auto';
     // }, duration / 3);
-  }, duration ?? _duration);
+  }, duration);
 }
